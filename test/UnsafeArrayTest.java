@@ -28,8 +28,8 @@ public class UnsafeArrayTest {
 
 	@Test
 	public void testSet() {
-		SimpleTestclass ret0 = arr.set(o1, 0);
-		SimpleTestclass ret4 = arr.set(o4, 4);
+		SimpleTestclass ret0 = arr.copyAndSet(o1, 0);
+		SimpleTestclass ret4 = arr.copyAndSet(o4, 4);
 		
 		// The objects should be equal, but 
 		// the references don't refer to the same object in memory
@@ -43,19 +43,19 @@ public class UnsafeArrayTest {
 	public void testSetIndexOutOfBoundsShouldFail() {
 		int exceptionCount = 0;
 		try{
-			arr.set(o2, 5);
+			arr.copyAndSet(o2, 5);
 		} catch(ArrayIndexOutOfBoundsException ex) {
 			exceptionCount++;
 		}
 		
 		try{
-			arr.set(o2, -1);
+			arr.copyAndSet(o2, -1);
 		} catch(ArrayIndexOutOfBoundsException ex) {
 			exceptionCount++;
 		}
 		
 		try{
-			arr.set(o2, 12345);
+			arr.copyAndSet(o2, 12345);
 		} catch(ArrayIndexOutOfBoundsException ex) {
 			exceptionCount++;
 		}
@@ -65,9 +65,9 @@ public class UnsafeArrayTest {
 	
 	@Test
 	public void testSetMultipleTimesOnSameIndex() {
-		SimpleTestclass ret1 = arr.set(o1, 2);
+		SimpleTestclass ret1 = arr.copyAndSet(o1, 2);
 		assertEquals(o1, ret1);
-		SimpleTestclass ret2 = arr.set(o2, 2);
+		SimpleTestclass ret2 = arr.copyAndSet(o2, 2);
 		assertEquals(o2, ret2);
 		assertEquals(o2, ret1);
 	}
@@ -79,7 +79,7 @@ public class UnsafeArrayTest {
 	
 	@Test
 	public void testSetAndGet() throws NotYetInitializedException {
-		SimpleTestclass set3 = arr.set(o3, 3);
+		SimpleTestclass set3 = arr.copyAndSet(o3, 3);
 		SimpleTestclass get3 = arr.get(3);
 		assertEquals(set3, o3);
 		assertSame(set3, get3);
@@ -88,7 +88,7 @@ public class UnsafeArrayTest {
 	
 	@Test
 	public void testGetAndEdit() throws NotYetInitializedException {
-		arr.set(o3, 3);
+		arr.copyAndSet(o3, 3);
 		SimpleTestclass ret0 = arr.get(3);  
 		ret0.b = 's';
 		SimpleTestclass ret1 = arr.get(3);
@@ -98,7 +98,7 @@ public class UnsafeArrayTest {
 	
 	@Test
 	public void testGetIndexOutOfBoundsShouldFail() throws NotYetInitializedException {
-		arr.set(o4, 4);
+		arr.copyAndSet(o4, 4);
 		int exceptionCount = 0;
 		try{
 			arr.get(5);

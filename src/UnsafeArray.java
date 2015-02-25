@@ -71,7 +71,7 @@ public class UnsafeArray<E> {
 	 * @param index The index inside the array. Zero based.
 	 * @return The element that has been stored in the array.
 	 */
-	public E set(E obj, int index) {
+	public E copyAndSet(E obj, int index) {
 		if(index < 0 || index >= length)
 			throw new ArrayIndexOutOfBoundsException(String.format("Tried to access element at index %d.", index));
 		initialized[index] = true;
