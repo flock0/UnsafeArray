@@ -43,7 +43,15 @@ public class UnsafeArray<E> {
 	 * @return The element at the specified index.
 	 */
 	public E get(int index) {
-		return null;
+		long offsetFromBaseAddress = sizeOfClassInBytes * index;
+		long objectAddress = baseAddressInMemory + offsetFromBaseAddress;
+		
+		Object[] helperArray = new Object[1];
+		long helperBaseOffset = unsafe.arrayBaseOffset(Object[].class);
+		long addressOfFirstHelperElement = UnsafeUtils.getAddressOf(helperArray) + helperBaseOffset;
+		unsafe.putLong(addressOfFirstHelperElement, objectAddress);
+		
+		return (E) helperArray[0];
 	}
 
 	/**
@@ -67,13 +75,5 @@ public class UnsafeArray<E> {
 		
 		return (E) helperArray[0];
 		
-	}
-
-	private boolean bytesAreEqual(long srcAddress, long destAddress, long sizeOfClassInBytes) {
-		for(int i = 0; i < sizeOfClassInBytes; i++) {
-			if(unsafe.getByte(srcAddress + i) != unsafe.getByte(destAddress + i))
-				return false;
-		}
-		return true;
 	}
 }
