@@ -90,12 +90,37 @@ public class UnsafeArrayTest {
 	}
 	
 	@Test
-	public void testGetAndEdit() {
-		fail("Not yet implemented");
+	public void testGetAndEdit() throws NotYetInitializedException {
+		arr.set(o3, 3);
+		SimpleTestclass ret0 = arr.get(3);  
+		ret0.b = 's';
+		SimpleTestclass ret1 = arr.get(3);
+		assertEquals(ret1, ret0);
+		assertNotEquals(o3, ret1);
 	}
 	
 	@Test
-	public void testGetIndexOutOfBoundsShouldFail() {
-		fail("Not yet implemented");
+	public void testGetIndexOutOfBoundsShouldFail() throws NotYetInitializedException {
+		arr.set(o4, 4);
+		int exceptionCount = 0;
+		try{
+			arr.get(5);
+		} catch(ArrayIndexOutOfBoundsException ex) {
+			exceptionCount++;
+		}
+		
+		try{
+			arr.get(-1);
+		} catch(ArrayIndexOutOfBoundsException ex) {
+			exceptionCount++;
+		}
+		
+		try{
+			arr.get(44);
+		} catch(ArrayIndexOutOfBoundsException ex) {
+			exceptionCount++;
+		}
+		
+		assertEquals(3, exceptionCount);
 	}
 }
