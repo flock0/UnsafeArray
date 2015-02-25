@@ -24,11 +24,12 @@ public class UnsafeArray<E> {
 	 * memory of the array is uninitialized.
 	 * 
 	 * @param type
-	 *            The class of objects stored in the array
+	 *            The class of objects stored in the array (as defined in the type parameter
 	 * @param length
 	 *            The maximum number of elements. Must be > 0
 	 */
 	public UnsafeArray(Class<E> type, int length) {
+		
 		this.length = length;
 		this.type = type;
 		sizeOfClassInBytes = UnsafeUtils.sizeof(type);
