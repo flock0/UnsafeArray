@@ -13,11 +13,11 @@ import sun.misc.Unsafe;
 
 public class UnsafeArray<E> {
 
-	private static Unsafe unsafe = UnsafeUtils.getUnsafe();
-	private long baseAddressInMemory;
-	private int sizeOfClassInBytes;
-	private int length;
-	private Class<E> type;
+	private final static Unsafe unsafe = UnsafeUtils.getUnsafe();
+	private final long baseAddressInMemory;
+	private final int sizeOfClassInBytes;
+	private final int length;
+	private final Class<E> type;
 
 	/**
 	 * Creates a new array which objects are stored directly in the array. The
@@ -46,18 +46,26 @@ public class UnsafeArray<E> {
 		return null;
 	}
 
-	public E set(E obj, int index) throws Exception {
-		long offset = sizeOfClassInBytes * index;
-		long srcAddress = UnsafeUtils.addressOf(obj);
-		long destAddress = baseAddressInMemory + offset;
-		unsafe.copyMemory(srcAddress, destAddress, sizeOfClassInBytes);
-		System.out.println(bytesAreEqual(srcAddress, destAddress,
-				sizeOfClassInBytes));
-		Object[] helperArr = new Object[1];
+	/**
+	 * Writes an object to the array.
+	 * 
+	 * As the object provided will be copied to the array, you should use the object returned by the method. 
+	 * @param obj The object to write to the array
+	 * @param index The index inside the array. Zero based.
+	 * @return The element that has been stored in the array.
+	 */
+	public E set(E obj, int index) {
+		long offsetFromBaseAddress = sizeOfClassInBytes * index;
+		long sourceAddress = UnsafeUtils.getAddressOf(obj);
+		long destAddress = baseAddressInMemory + offsetFromBaseAddress;
+		unsafe.copyMemory(sourceAddress, destAddress, sizeOfClassInBytes);
+		
+		Object[] helperArray = new Object[1];
 		long helperBaseOffset = unsafe.arrayBaseOffset(Object[].class);
-		long addressOfFirstHelperElement = UnsafeUtils.addressOf(helperArr) + helperBaseOffset;
+		long addressOfFirstHelperElement = UnsafeUtils.getAddressOf(helperArray) + helperBaseOffset;
 		unsafe.putLong(addressOfFirstHelperElement, destAddress);
-		return (E) helperArr[0];
+		
+		return (E) helperArray[0];
 		
 	}
 

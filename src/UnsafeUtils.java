@@ -121,7 +121,7 @@ public class UnsafeUtils {
 		return unsafe;
 	}
 
-	public static long addressOf(Object o) throws Exception {
+	public static long getAddressOf(Object o) {
 
 		Object[] array = new Object[] { o };
 
