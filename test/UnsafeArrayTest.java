@@ -4,9 +4,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import sun.java2d.pipe.SpanShapeRenderer.Simple;
-
-
 public class UnsafeArrayTest {
 
 	UnsafeArray<SimpleTestclass> arr;

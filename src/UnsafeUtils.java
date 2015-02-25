@@ -9,6 +9,12 @@ import java.util.List;
 
 import sun.misc.Unsafe;
 
+/**
+ * Contains some helper methods for dealing with unsafe operations.
+ * 
+ * @author Florian Chlan
+ *
+ */
 public class UnsafeUtils {
 
 	private static Unsafe unsafe;
@@ -22,47 +28,36 @@ public class UnsafeUtils {
 		} catch (InvocationTargetException | IllegalArgumentException
 				| IllegalAccessException | InstantiationException
 				| NoSuchMethodException | SecurityException e) {
-			// TODO Auto-generated catch block
+			// Nothing we can do about it
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Returns the size of the given class in bytes
-	 * 
-	 * @param cls The class whose size to get. Must not be null or an array
-	 * 
-	 * @see https://stackoverflow.com/questions/8775865/is-there-a-simple-way-to-get-the-size-of-a-java-object
+	 * Gets the address of an object in memory
+	 * @param o The object
+	 * @return The address of the object in memory
 	 */
-	public static int sizeof(Class<?> cls) {
+	public static long getAddressOf(Object o) {
 
-        if (cls == null)
-            throw new NullPointerException();
+		Object[] array = new Object[] { o };
 
-        if (cls.isArray())
-            throw new IllegalArgumentException();
+		long baseOffset = unsafe.arrayBaseOffset(Object[].class);
+		int addressSize = unsafe.addressSize();
+		long objectAddress;
+		switch (addressSize) {
+		case 4:
+			objectAddress = unsafe.getInt(array, baseOffset);
+			break;
+		case 8:
+			objectAddress = unsafe.getLong(array, baseOffset);
+			break;
+		default:
+			throw new Error("unsupported address size: " + addressSize);
+		}
 
-        if (cls.isPrimitive())
-            return getFieldSize(cls);
-
-        int lastOffset = Integer.MIN_VALUE;
-        Class<?> lastClass = null;
-
-        for (Field f : getAllNonStaticFields(cls)) {
-            if (Modifier.isStatic(f.getModifiers()))
-                continue;
-
-            int offset = (int) unsafe.objectFieldOffset(f);
-            if (offset > lastOffset) {
-                lastOffset = offset;
-                lastClass = f.getClass();
-            }
-        }
-        if (lastOffset > 0)
-            return modulo8(lastOffset + getFieldSize(lastClass));
-        else
-            return 16;
-    }
+		return (objectAddress);
+	}
 
 	/**
 	 * Returns all non-static fields of a class (including those from its
@@ -113,40 +108,56 @@ public class UnsafeUtils {
 			return 4; // Reference pointers are assumed to be 4 byte long
 	}
 
-	private static int modulo8(int value) {
-		return (value & 0x7) > 0 ? (value & ~0x7) + 8 : value;
-	}
-
 	public static Unsafe getUnsafe() {
 		return unsafe;
 	}
 
-	public static long getAddressOf(Object o) {
-
-		Object[] array = new Object[] { o };
-
-		long baseOffset = unsafe.arrayBaseOffset(Object[].class);
-		int addressSize = unsafe.addressSize();
-		long objectAddress;
-		switch (addressSize) {
-		case 4:
-			objectAddress = unsafe.getInt(array, baseOffset);
-			break;
-		case 8:
-			objectAddress = unsafe.getLong(array, baseOffset);
-			break;
-		default:
-			throw new Error("unsupported address size: " + addressSize);
-		}
-
-		return (objectAddress);
+	private static int modulo8(int value) {
+		return (value & 0x7) > 0 ? (value & ~0x7) + 8 : value;
 	}
+
+	/**
+	 * Returns the size of the given class in bytes
+	 * 
+	 * @param cls The class whose size to get. Must not be null or an array
+	 * 
+	 * @see https://stackoverflow.com/questions/8775865/is-there-a-simple-way-to-get-the-size-of-a-java-object
+	 */
+	public static int sizeof(Class<?> cls) {
+
+        if (cls == null)
+            throw new NullPointerException();
+
+        if (cls.isArray())
+            throw new IllegalArgumentException();
+
+        if (cls.isPrimitive())
+            return getFieldSize(cls);
+
+        int lastOffset = Integer.MIN_VALUE;
+        Class<?> lastClass = null;
+
+        for (Field f : getAllNonStaticFields(cls)) {
+            if (Modifier.isStatic(f.getModifiers()))
+                continue;
+
+            int offset = (int) unsafe.objectFieldOffset(f);
+            if (offset > lastOffset) {
+                lastOffset = offset;
+                lastClass = f.getClass();
+            }
+        }
+        if (lastOffset > 0)
+            return modulo8(lastOffset + getFieldSize(lastClass));
+        else
+            return 16;
+    }
 
 	private static Field[] sortFieldsByName(Field[] fields) {
 		Arrays.sort(fields, new FieldNameComparator());
 		return fields;
 	}
-
+	
 	private static class FieldNameComparator implements Comparator<Field> {
 		@Override
 		public int compare(Field o1, Field o2) {
