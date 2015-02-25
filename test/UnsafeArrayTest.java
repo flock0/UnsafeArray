@@ -68,7 +68,11 @@ public class UnsafeArrayTest {
 	
 	@Test
 	public void testSetMultipleTimesOnSameIndex() {
-		fail("Not yet implemented");
+		SimpleTestclass ret1 = arr.set(o1, 2);
+		assertEquals(o1, ret1);
+		SimpleTestclass ret2 = arr.set(o2, 2);
+		assertEquals(o2, ret2);
+		assertEquals(o2, ret1);
 	}
 	
 	@Test
