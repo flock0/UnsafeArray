@@ -50,7 +50,7 @@ public class UnsafeArray<E> {
 	 * Writes an object to the array.
 	 * 
 	 * As the object provided will be copied to the array, you should use the object returned by the method. 
-	 * @param obj The object to write to the array
+	 * @param obj The object to write to the array.
 	 * @param index The index inside the array. Zero based.
 	 * @return The element that has been stored in the array.
 	 */
