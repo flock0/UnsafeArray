@@ -75,9 +75,9 @@ public class UnsafeArrayTest {
 		assertEquals(o2, ret1);
 	}
 	
-	@Test
-	public void testGetUnitialized() {
-		fail("Not yet implemented");
+	@Test(expected = NotYetInitializedException.class)
+	public void testGetUnitialized() throws NotYetInitializedException {
+		arr.get(1);
 	}
 	
 	@Test

@@ -18,6 +18,7 @@ public class UnsafeArray<E> {
 	private final int sizeOfClassInBytes;
 	private final int length;
 	private final Class<E> type;
+	boolean[] initialized;
 
 	/**
 	 * Creates a new array which objects are stored directly in the array. The
@@ -34,6 +35,8 @@ public class UnsafeArray<E> {
 		this.type = type;
 		sizeOfClassInBytes = UnsafeUtils.sizeof(type);
 		baseAddressInMemory = unsafe.allocateMemory(sizeOfClassInBytes * length);
+		initialized = new boolean[length];
+		Arrays.fill(initialized, false);
 	}
 
 	/**
@@ -42,8 +45,13 @@ public class UnsafeArray<E> {
 	 * @param index
 	 *            The index inside the array. Zero based.
 	 * @return The element at the specified index.
+	 * @throws NotYetInitializedException When no object has been set at the field with the provided index
 	 */
-	public E get(int index) {
+	public E get(int index) throws NotYetInitializedException {
+		if(index < 0 || index >= length)
+			throw new ArrayIndexOutOfBoundsException(String.format("Tried to access element at index %d.", index));
+		if(initialized[index] == false)
+			throw new NotYetInitializedException();
 		long offsetFromBaseAddress = sizeOfClassInBytes * index;
 		long objectAddress = baseAddressInMemory + offsetFromBaseAddress;
 		
