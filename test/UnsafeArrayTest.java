@@ -81,8 +81,12 @@ public class UnsafeArrayTest {
 	}
 	
 	@Test
-	public void testSetAndGet() {
-		fail("Not yet implemented");
+	public void testSetAndGet() throws NotYetInitializedException {
+		SimpleTestclass set3 = arr.set(o3, 3);
+		SimpleTestclass get3 = arr.get(3);
+		assertEquals(set3, o3);
+		assertSame(set3, get3);
+		
 	}
 	
 	@Test
