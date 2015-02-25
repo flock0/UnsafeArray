@@ -30,7 +30,8 @@ public class UnsafeArray<E> {
 	 *            The maximum number of elements. Must be > 0
 	 */
 	public UnsafeArray(Class<E> type, int length) {
-		
+		if(length < 1)
+			throw new IllegalArgumentException("Arraylength is <= 0.");
 		this.length = length;
 		this.type = type;
 		sizeOfClassInBytes = UnsafeUtils.sizeof(type);

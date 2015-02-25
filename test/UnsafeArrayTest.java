@@ -123,4 +123,9 @@ public class UnsafeArrayTest {
 		
 		assertEquals(3, exceptionCount);
 	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void testConstructArrayLengthTooSmallShouldFail() {
+		new UnsafeArray<SimpleTestclass>(SimpleTestclass.class, 0);
+	}
 }
