@@ -86,6 +86,15 @@ public class UnsafeArray<E> {
 		unsafe.putLong(addressOfFirstHelperElement, destAddress);
 		
 		return (E) helperArray[0];
-		
 	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			unsafe.freeMemory(baseAddressInMemory);
+		} finally {
+			super.finalize();
+		}
+	}
+	
 }

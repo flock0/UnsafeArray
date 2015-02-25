@@ -125,4 +125,12 @@ public class UnsafeArrayTest {
 	public void testConstructArrayLengthTooSmallShouldFail() {
 		new UnsafeArray<SimpleTestclass>(SimpleTestclass.class, 0);
 	}
+	
+	@Test
+	public void testReleasingMemory() {
+		UnsafeArray<SimpleTestclass> arr;
+		for(int i = 0; i < 100000; i++) {
+			arr = new UnsafeArray<SimpleTestclass>(SimpleTestclass.class, 10000);
+		}
+	}
 }
