@@ -43,8 +43,27 @@ public class UnsafeArrayTest {
 	}
 	
 	@Test
-	public void testSetOutsideBoundaryShouldFail() {
-		fail("Not yet implemented");
+	public void testSetIndexOutOfBoundsShouldFail() {
+		int exceptionCount = 0;
+		try{
+			arr.set(o2, 5);
+		} catch(ArrayIndexOutOfBoundsException ex) {
+			exceptionCount++;
+		}
+		
+		try{
+			arr.set(o2, -1);
+		} catch(ArrayIndexOutOfBoundsException ex) {
+			exceptionCount++;
+		}
+		
+		try{
+			arr.set(o2, 12345);
+		} catch(ArrayIndexOutOfBoundsException ex) {
+			exceptionCount++;
+		}
+		
+		assertEquals(3, exceptionCount);
 	}
 	
 	@Test
@@ -66,5 +85,9 @@ public class UnsafeArrayTest {
 	public void testGetAndEdit() {
 		fail("Not yet implemented");
 	}
-
+	
+	@Test
+	public void testGetIndexOutOfBoundsShouldFail() {
+		fail("Not yet implemented");
+	}
 }

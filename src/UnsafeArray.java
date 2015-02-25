@@ -64,6 +64,8 @@ public class UnsafeArray<E> {
 	 * @return The element that has been stored in the array.
 	 */
 	public E set(E obj, int index) {
+		if(index < 0 || index >= length)
+			throw new ArrayIndexOutOfBoundsException(String.format("Tried to access element at index %d.", index));
 		long offsetFromBaseAddress = sizeOfClassInBytes * index;
 		long sourceAddress = UnsafeUtils.getAddressOf(obj);
 		long destAddress = baseAddressInMemory + offsetFromBaseAddress;
