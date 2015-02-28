@@ -19,7 +19,7 @@ public class UnsafeArray<E> {
 	private final static Unsafe unsafe = UnsafeUtils.getUnsafe();
 	private final long baseAddressInMemory;
 	private final int sizeOfClassInBytes;
-	private final int length;
+	public final int length;
 	boolean[] initialized;
 
 	/**
