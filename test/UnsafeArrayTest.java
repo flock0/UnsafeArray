@@ -4,6 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.epfl.data.NotYetInitializedException;
+import ch.epfl.data.UnsafeArray;
+
 public class UnsafeArrayTest {
 
 	UnsafeArray<SimpleTestclass> arr;
@@ -131,6 +134,7 @@ public class UnsafeArrayTest {
 		UnsafeArray<SimpleTestclass> arr;
 		for(int i = 0; i < 100000; i++) {
 			arr = new UnsafeArray<SimpleTestclass>(SimpleTestclass.class, 10000);
+			if(i%100 == 0) System.gc(); // Unclear behaviour. Needed for JDK1.7.0.75 x86 on Linux Mint.
 		}
 	}
 }

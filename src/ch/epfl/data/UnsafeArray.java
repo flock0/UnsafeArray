@@ -1,6 +1,10 @@
+package ch.epfl.data;
+
 import java.util.Arrays;
 
 import sun.misc.Unsafe;
+
+
 
 /**
  * An array implementation that saves objects directly in the memory area of the array.
