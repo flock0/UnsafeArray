@@ -18,6 +18,10 @@ import sun.misc.Unsafe;
  */
 public class UnsafeUtils {
 
+	private static final int NR_BITS = Integer.valueOf(System.getProperty("sun.arch.data.model"));
+	private static final int BYTE = 8;
+	private static final int WORD = NR_BITS/BYTE; 
+	
 	private static Unsafe unsafe;
 
 	static {
@@ -106,7 +110,8 @@ public class UnsafeUtils {
 		if (cls == double.class)
 			return 8;
 		else
-			return 4; // Reference pointers are assumed to be 4 byte long
+			// Reference pointers are assumed to be 4 byte (x86) or 8 byte (x64) long.
+			return WORD; 
 	}
 
 	public static Unsafe getUnsafe() {
@@ -139,9 +144,6 @@ public class UnsafeUtils {
         Class<?> lastClass = null;
 
         for (Field f : getAllNonStaticFields(cls)) {
-            if (Modifier.isStatic(f.getModifiers()))
-                continue;
-
             int offset = (int) unsafe.objectFieldOffset(f);
             if (offset > lastOffset) {
                 lastOffset = offset;
@@ -151,7 +153,7 @@ public class UnsafeUtils {
         if (lastOffset > 0)
             return modulo8(lastOffset + getFieldSize(lastClass));
         else
-            return 16;
+            return 2*WORD;
     }
 
 	private static Field[] sortFieldsByName(Field[] fields) {

@@ -15,6 +15,7 @@ public class HelloWorld {
 //				 System.out.println(usarr.get(1).x);
 //				 retr0.x = 5554;
 //				 System.out.println(usarr.get(1).x);
-
+		Unsafe u = UnsafeUtils.getUnsafe();
+		System.out.println(u.arrayBaseOffset(Object[].class));
 	}
 }
