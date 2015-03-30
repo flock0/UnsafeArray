@@ -52,7 +52,7 @@ public class UnsafeArray<E> {
 	 */
 	public E get(int index) throws NotYetInitializedException {
 		if(index < 0 || index >= length)
-			throw new ArrayIndexOutOfBoundsException(String.format("Tried to access element at index %d.", index));
+			throw new ArrayIndexOutOfBoundsException(String.format("Tried to access element at index %d but length of array is %d.", index, length));
 		if(initialized[index] == false)
 			throw new NotYetInitializedException();
 		long offsetFromBaseAddress = sizeOfClassInBytes * index;
@@ -62,7 +62,7 @@ public class UnsafeArray<E> {
 		long helperBaseOffset = unsafe.arrayBaseOffset(Object[].class);
 		long addressOfFirstHelperElement = UnsafeUtils.getAddressOf(helperArray) + helperBaseOffset;
 		unsafe.putLong(addressOfFirstHelperElement, objectAddress);
-		
+
 		return (E) helperArray[0];
 	}
 
@@ -76,7 +76,7 @@ public class UnsafeArray<E> {
 	 */
 	public E copyAndSet(E obj, int index) {
 		if(index < 0 || index >= length)
-			throw new ArrayIndexOutOfBoundsException(String.format("Tried to access element at index %d.", index));
+			throw new ArrayIndexOutOfBoundsException(String.format("Tried to access element at index %d but length of array is %d.", index, length));
 		initialized[index] = true;
 		long offsetFromBaseAddress = sizeOfClassInBytes * index;
 		long sourceAddress = UnsafeUtils.getAddressOf(obj);
@@ -87,7 +87,7 @@ public class UnsafeArray<E> {
 		long helperBaseOffset = unsafe.arrayBaseOffset(Object[].class);
 		long addressOfFirstHelperElement = UnsafeUtils.getAddressOf(helperArray) + helperBaseOffset;
 		unsafe.putLong(addressOfFirstHelperElement, destAddress);
-		
+
 		return (E) helperArray[0];
 	}
 
