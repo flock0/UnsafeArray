@@ -58,12 +58,7 @@ public class UnsafeArray<E> {
 		long offsetFromBaseAddress = sizeOfClassInBytes * index;
 		long objectAddress = baseAddressInMemory + offsetFromBaseAddress;
 		
-		Object[] helperArray = new Object[1];
-		long helperBaseOffset = unsafe.arrayBaseOffset(Object[].class);
-		long addressOfFirstHelperElement = UnsafeUtils.getAddressOf(helperArray) + helperBaseOffset;
-		unsafe.putLong(addressOfFirstHelperElement, objectAddress);
-
-		return (E) helperArray[0];
+		return getObjectFromAddress(objectAddress);
 	}
 
 	/**
@@ -83,12 +78,27 @@ public class UnsafeArray<E> {
 		long destAddress = baseAddressInMemory + offsetFromBaseAddress;
 		unsafe.copyMemory(sourceAddress, destAddress, sizeOfClassInBytes);
 		
-		Object[] helperArray = new Object[1];
-		long helperBaseOffset = unsafe.arrayBaseOffset(Object[].class);
-		long addressOfFirstHelperElement = UnsafeUtils.getAddressOf(helperArray) + helperBaseOffset;
-		unsafe.putLong(addressOfFirstHelperElement, destAddress);
+		return getObjectFromAddress(destAddress);
+	}
 
-		return (E) helperArray[0];
+	/**
+	 * Gets an object from the allocated memory area.
+	 * @param objectAddress The objects address in memory
+	 * @return An object 
+	 */
+	private E getObjectFromAddress(long objectAddress) {
+		Pointer p = new Pointer();
+		long pointerOffset = 0;
+		try {
+			pointerOffset = unsafe.objectFieldOffset(Pointer.class.getDeclaredField("pointer"));
+		} catch (NoSuchFieldException e) {
+			throw new RuntimeException("Pointer.pointer field not found.");
+		} catch (SecurityException e) {
+			/* Nothing we can do about it here */
+		}
+		unsafe.putLong(p, pointerOffset, objectAddress);
+	
+		return (E) p.pointer;
 	}
 
 	@Override
@@ -100,4 +110,10 @@ public class UnsafeArray<E> {
 		}
 	}
 	
+	/**
+	 * Used for retrieving objects from the array using sun.misc.unsafe.
+	 */
+	class Pointer {
+		Object pointer;
+	}
 }
