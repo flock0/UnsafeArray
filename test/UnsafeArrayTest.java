@@ -145,4 +145,20 @@ public class UnsafeArrayTest {
 		DeepTestclass retr1 = complexArr.copyAndSet(c1, 1);
 		assertEquals(c1, retr1);
 	}
+	
+	@Test
+	public void testFillHugeArray() {
+		int ARRAY_SIZE = 600000;
+		UnsafeArray<ShallowTestclass> hugeArray = new UnsafeArray<ShallowTestclass>(ShallowTestclass.class, ARRAY_SIZE);
+		for (int i = 0; i < ARRAY_SIZE; i++) {
+			assertEquals("assertEquals Fail at copySet " + i, o1, hugeArray.copyAndSet(o1, i));
+		}
+		for (int i = 100000; i < ARRAY_SIZE; i++) {
+			try {
+				assertEquals("assertEquals Fail at get " + i, o1, hugeArray.get(i));
+			} catch (NotYetInitializedException e) {
+				fail("Should be intialized, but exception thrown.");
+			}
+		} 
+	}
 }
