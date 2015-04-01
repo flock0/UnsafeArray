@@ -13,9 +13,6 @@ import sun.misc.Unsafe;
 
 /**
  * Contains some helper methods for dealing with unsafe operations.
- * 
- * @author Florian Chlan
- *
  */
 public class UnsafeUtils {
 

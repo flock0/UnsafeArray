@@ -16,8 +16,6 @@ import sun.misc.Unsafe;
  * Right now, this implementation is only compatible with classes that do not
  * include any fields of a Reference type inside the class itself.
  * 
- * @author Florian Chlan
- *
  * @param <E>
  *            The type of objects stored in the array.
  */
