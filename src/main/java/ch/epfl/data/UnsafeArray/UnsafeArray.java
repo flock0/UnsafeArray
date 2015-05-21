@@ -25,6 +25,8 @@ public class UnsafeArray<E> {
     private final long baseAddressInMemory;
     private final int sizeOfClassInBytes;
     public final int length;
+    private Pointer p = new Pointer();
+    private long pointerOffset = 0;
     boolean[] initialized;
 
     /**
@@ -42,6 +44,14 @@ public class UnsafeArray<E> {
         this.length = length;
         sizeOfClassInBytes = UnsafeUtils.sizeof(type);
         baseAddressInMemory = unsafe.allocateMemory(sizeOfClassInBytes * length);
+        try {
+            pointerOffset = unsafe.objectFieldOffset(Pointer.class
+                    .getDeclaredField("pointer"));
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException("Pointer.pointer field not found.");
+        } catch (SecurityException e) {
+            /* Nothing we can do about it here */
+        }
         initialized = new boolean[length];
         Arrays.fill(initialized, false);
     }
@@ -105,17 +115,6 @@ public class UnsafeArray<E> {
      * @return An object
      */
     private E getObjectFromAddress(long objectAddress) {
-        Pointer p = new Pointer();
-        long pointerOffset = 0;
-        try {
-            pointerOffset = unsafe.objectFieldOffset(Pointer.class
-                    .getDeclaredField("pointer"));
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException("Pointer.pointer field not found.");
-        } catch (SecurityException e) {
-            /* Nothing we can do about it here */
-        }
-        
         unsafe.putLong(p, pointerOffset, objectAddress);
         return (E) p.pointer;
     }
@@ -132,7 +131,7 @@ public class UnsafeArray<E> {
     /**
      * Used for retrieving objects from the array using sun.misc.unsafe.
      */
-    class Pointer {
+    private static class Pointer {
         Object pointer;
     }
 }
