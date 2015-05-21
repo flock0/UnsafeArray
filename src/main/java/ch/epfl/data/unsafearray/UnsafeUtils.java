@@ -1,4 +1,4 @@
-package ch.epfl.data;
+package ch.epfl.data.unsafearray;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

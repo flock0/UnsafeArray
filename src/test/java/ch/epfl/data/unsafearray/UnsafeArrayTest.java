@@ -1,11 +1,13 @@
+package ch.epfl.data.unsafearray;
+
 import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.epfl.data.NotYetInitializedException;
-import ch.epfl.data.UnsafeArray;
+import ch.epfl.data.unsafearray.NotYetInitializedException;
+import ch.epfl.data.unsafearray.UnsafeArray;
 
 public class UnsafeArrayTest {
 

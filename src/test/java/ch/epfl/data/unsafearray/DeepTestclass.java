@@ -1,11 +1,15 @@
-public class ShallowTestclass {
+package ch.epfl.data.unsafearray;
+
+public class DeepTestclass {
     public int a;
     public double b;
+    public ShallowTestclass c;
 
-    public ShallowTestclass(int a, char c, char d, double b) {
+    public DeepTestclass(int a, double b, ShallowTestclass c) {
         super();
         this.a = a;
         this.b = b;
+        this.c = c;
     }
 
     @Override
@@ -27,10 +31,12 @@ public class ShallowTestclass {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        ShallowTestclass other = (ShallowTestclass) obj;
+        DeepTestclass other = (DeepTestclass) obj;
         if (a != other.a)
             return false;
         if (Double.doubleToLongBits(b) != Double.doubleToLongBits(other.b))
+            return false;
+        if (!c.equals(other.c))
             return false;
         return true;
     }

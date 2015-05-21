@@ -1,4 +1,4 @@
-package ch.epfl.data;
+package ch.epfl.data.unsafearray;
 
 import java.util.Arrays;
 import sun.misc.Unsafe;
